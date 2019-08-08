@@ -47,7 +47,7 @@ class StoryList {
     // TODO - Implement this functions!
     // this function should return the newly created story so it can be used in
     // the ui.js file where it will be appended to the DOM
-    let createdStory = await axios.post("story": newStory, "token": user.loginToken);
+    let createdStory = await axios.post("http://hack-or-snooze-v3.herokuapp.com/stories",{"token": user.loginToken, "story": newStory});
     return createdStory;
   }
 }

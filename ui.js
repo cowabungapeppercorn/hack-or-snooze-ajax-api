@@ -93,13 +93,16 @@ $(async function() {
   /**
    * Event handler for Submitting New Article
    */
-  $submitForm.on("submit", function() {
+  $submitForm.on("submit", async function() {
     let newStoryObj = {
       author: $("#author").val(),
       title: $("#title").val(),
       url: $("#url").val()
     }
-    storyList.addStory(currentUser, newStoryObj);
+    let newStory = await storyList.addStory(currentUser, newStoryObj);
+    generateStories();
+    $submitForm.slideToggle();
+    $allStoriesList.toggle();
   });
 
   /**
@@ -165,7 +168,6 @@ $(async function() {
     storyList = storyListInstance;
     // empty out that part of the page
     $allStoriesList.empty();
-
     // loop through all of our stories and generate HTML for them
     for (let story of storyList.stories) {
       const result = generateStoryHTML(story);
@@ -179,7 +181,6 @@ $(async function() {
 
   function generateStoryHTML(story) {
     let hostName = getHostName(story.url);
-
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
@@ -210,6 +211,7 @@ $(async function() {
   }
 
   function showNavForLoggedInUser() {
+    $(".main-nav-links").show();
     $navLogin.hide();
     $navLogOut.show();
   }
