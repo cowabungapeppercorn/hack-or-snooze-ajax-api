@@ -1,4 +1,4 @@
-$(async function() {
+$(async function () {
   // cache some selectors we'll be using quite a bit
   const $allStoriesList = $("#all-articles-list");
   const $submitForm = $("#submit-form");
@@ -23,7 +23,7 @@ $(async function() {
    *  If successful we will setup the user instance
    */
 
-  $loginForm.on("submit", async function(evt) {
+  $loginForm.on("submit", async function (evt) {
     evt.preventDefault(); // no page-refresh on submit
 
     // grab the username and password
@@ -44,7 +44,7 @@ $(async function() {
    *  If successfully we will setup a new user instance
    */
 
-  $createAccountForm.on("submit", async function(evt) {
+  $createAccountForm.on("submit", async function (evt) {
     evt.preventDefault(); // no page refresh
 
     // grab the required fields
@@ -63,7 +63,7 @@ $(async function() {
    * Log Out Functionality
    */
 
-  $navLogOut.on("click", function() {
+  $navLogOut.on("click", function () {
     // empty out local storage
     localStorage.clear();
     // refresh the page, clearing memory
@@ -74,7 +74,7 @@ $(async function() {
    * Event Handler for Clicking Login
    */
 
-  $navLogin.on("click", function() {
+  $navLogin.on("click", function () {
     // Show the Login and Create Account Forms
     $loginForm.slideToggle();
     $createAccountForm.slideToggle();
@@ -85,7 +85,7 @@ $(async function() {
    * Event handler for Clicking Sumbit
    */
 
-  $navSubmit.on("click", function() {
+  $navSubmit.on("click", function () {
     $submitForm.slideToggle();
     $allStoriesList.toggle();
   });
@@ -93,7 +93,7 @@ $(async function() {
   /**
    * Event handler for Submitting New Article
    */
-  $submitForm.on("submit", async function() {
+  $submitForm.on("submit", async function () {
     let newStoryObj = {
       author: $("#author").val(),
       title: $("#title").val(),
@@ -109,7 +109,7 @@ $(async function() {
    * Event handler for Navigation to Homepage
    */
 
-  $("body").on("click", "#nav-all", async function() {
+  $("body").on("click", "#nav-all", async function () {
     hideElements();
     await generateStories();
     $allStoriesList.show();
@@ -184,6 +184,9 @@ $(async function() {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
+      <span class="star">
+      <i class="far fa-star"></i>
+      </span>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -195,6 +198,24 @@ $(async function() {
 
     return storyMarkup;
   }
+  /* click listener on stars */
+  $(".star").on("click", favoriteArticle);
+
+
+  /*  Creating the click function for the favorite  */
+  function favoriteArticle() {
+    if ($(this).children().hasClass("far")) {
+      $(this).children().addClass('fas').removeClass("far");
+      let storyId = $(this).closest("li").attr('id');
+      console.log(storyId);
+      // currentUser.favorites.push(story);
+    } else {
+      $(this).children().addClass('far').removeClass("fas");
+    }
+  }
+
+
+
 
   /* hide all elements in elementsArr */
 
