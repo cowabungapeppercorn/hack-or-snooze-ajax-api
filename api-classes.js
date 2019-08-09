@@ -173,7 +173,6 @@ class User {
   //get Favorite stories
   async getFavoriteStories() {
     // query the /stories endpoint (no auth required)
-    console.log(currentUser.loginToken);
     const response = await axios.get(`${BASE_URL}/users/${currentUser.username}/`, {
       params: {
         "token": currentUser.loginToken

@@ -39,7 +39,6 @@ $(async function () {
     syncCurrentUserToLocalStorage();
     loginAndSubmitForm();
     $(".main-nav-links").toggleClass("hidden");
-    $(".star").toggleClass("hidden");
   });
 
   /**
@@ -69,7 +68,6 @@ $(async function () {
   $navLogOut.on("click", function () {
     // empty out local storage
     localStorage.clear();
-    $(".star").toggleClass("hidden");
     // refresh the page, clearing memory
     location.reload();
   });
@@ -188,7 +186,7 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-      <span class="star ${starCheck(currentUser)}">
+      <span class="star">
       <i class="${loopFavorites(currentUser, story)} fa-star"></i>
       </span>
         <a class="article-link" href="${story.url}" target="a_blank">
@@ -202,8 +200,11 @@ $(async function () {
 
     return storyMarkup;
   }
+
   /* click listener on stars */
-  $(".star").on("click", favoriteArticle);
+  if(currentUser !== null) {
+    $(".star").on("click", favoriteArticle);
+  };
 
 
   /*  Creating the click function for the favorite  */
@@ -211,15 +212,17 @@ $(async function () {
     console.log("click");
     if ($(this).children().hasClass("far")) {
       let storyId = $(this).closest("li").attr('id');
+
+      $(this).children().addClass('fas').removeClass("far");
       console.log(storyId);
       await currentUser.addFavorite(currentUser, storyId);
-      $(this).children().addClass('fas').removeClass("far");
       // currentUser.favorites.push(story);
     } else {
       let storyId = $(this).closest("li").attr('id');
+
+      $(this).children().addClass('far').removeClass("fas");
       // console.log("remove please")
       await currentUser.removeFavorite(currentUser, storyId);
-      $(this).children().addClass('far').removeClass("fas");
     }
   }
 
