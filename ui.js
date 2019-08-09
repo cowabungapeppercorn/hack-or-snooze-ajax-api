@@ -186,9 +186,7 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-      <span class="star">
       <i class="${loopFavorites(currentUser, story)} fa-star"></i>
-      </span>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -206,9 +204,7 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-      <span class="star">
-      <i class="fas fa-star"></i>
-      </span>
+        <i class="fas fa-star"></i>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -226,20 +222,17 @@ $(async function () {
   //   $(".star").on("click", favoriteArticle);
   // };
 
-  $allStoriesList.on("click", $(".star"), function(evt){
+  $allStoriesList.on("click", ".fa-star", function(evt){
     favoriteArticle(evt);
   });
 
   /*  Creating the click function for the favorite  */
   async function favoriteArticle(evt) {
-    if ($(evt.target).closest("i").hasClass("far")) {
-      let storyId = $(evt.target).closest("li").attr('id');
-
-      $(evt.target).closest("i").addClass('fas').removeClass("far");
+    let storyId = $(evt.target).parent().attr('id');
+    $(evt.target).toggleClass("far fas");
+    if ($(evt.target).hasClass("fas")) {
       await currentUser.addFavorite(currentUser, storyId);
     } else {
-      let storyId = $(evt.target).closest("li").attr('id');
-      $(evt.target).closest("i").addClass('far').removeClass("fas");
       await currentUser.removeFavorite(currentUser, storyId);
     }
   }
@@ -298,9 +291,9 @@ $(async function () {
 $("#nav-favorites").on("click", generateFavs);
 
 /* Generate favorite stories function */
- async function generateFavs() {
+function generateFavs() {
   // get an instance of StoryList
-  const favoriteStoryListInstance = await currentUser.getFavoriteStories();
+  const favoriteStoryListInstance = currentUser.favorites;
   // update our global variable
   favoriteList = favoriteStoryListInstance;
   // empty out that part of the page
@@ -314,3 +307,23 @@ $("#nav-favorites").on("click", generateFavs);
 
 
 });
+
+function loopFavorites(user, story) {
+  if (user === null) {
+    return "far"
+  } else {
+    for (let i = 0; i < user.favorites.length; i++) {
+      if (user.favorites[i].storyId === story.storyId) {
+        return "fas";
+      }
+    }
+  }
+  return "far";
+}
+
+function starCheck(user) {
+  if (user === null) {
+    return "hidden";
+  }
+  return;
+}

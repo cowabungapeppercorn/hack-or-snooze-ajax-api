@@ -132,12 +132,13 @@ class User {
    */
 
   async addFavorite(user, storyId) {
-    let newFavorite = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { "token": user.loginToken });
-    return newFavorite;
+    let response = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { token: user.loginToken });
+    // debugger;
+    user.favorites = response.data.user.favorites;
   }
   async removeFavorite(user, storyId) {
-    let removedFavorite = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { "data": { "token": user.loginToken } });
-    return removedFavorite;
+    let response = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { data: { token: user.loginToken } });
+    user.favorites = response.data.user.favorites;
   }
 
 
@@ -206,24 +207,4 @@ class Story {
     this.createdAt = storyObj.createdAt;
     this.updatedAt = storyObj.updatedAt;
   }
-}
-
-function loopFavorites(user, story) {
-  if (user === null) {
-    return "far"
-  } else {
-    for (let i = 0; i < user.favorites.length; i++) {
-      if (user.favorites[i].storyId === story.storyId) {
-        return "fas";
-      }
-    }
-  }
-  return "far";
-}
-
-function starCheck(user) {
-  if (user === null) {
-    return "hidden";
-  }
-  return;
 }
