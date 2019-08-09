@@ -1,3 +1,6 @@
+ // global currentUser variable
+ let currentUser = null;
+
 $(async function () {
   // cache some selectors we'll be using quite a bit
   const $allStoriesList = $("#all-articles-list");
@@ -13,8 +16,7 @@ $(async function () {
   // global storyList variable
   let storyList = null;
 
-  // global currentUser variable
-  let currentUser = null;
+ 
 
   await checkIfLoggedIn();
 
@@ -99,7 +101,7 @@ $(async function () {
       title: $("#title").val(),
       url: $("#url").val()
     }
-    let newStory = await storyList.addStory(currentUser, newStoryObj);
+    await storyList.addStory(currentUser, newStoryObj);
     generateStories();
     $submitForm.slideToggle();
     $allStoriesList.toggle();
@@ -185,7 +187,7 @@ $(async function () {
     const storyMarkup = $(`
       <li id="${story.storyId}">
       <span class="star">
-      <i class="far fa-star"></i>
+      <i class="${loopFavorites(currentUser, story)} fa-star"></i>
       </span>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
@@ -203,11 +205,11 @@ $(async function () {
 
 
   /*  Creating the click function for the favorite  */
-  function favoriteArticle() {
+  async function favoriteArticle() {
     if ($(this).children().hasClass("far")) {
       $(this).children().addClass('fas').removeClass("far");
       let storyId = $(this).closest("li").attr('id');
-      console.log(storyId);
+      await currentUser.addFavorite(currentUser, storyId);
       // currentUser.favorites.push(story);
     } else {
       $(this).children().addClass('far').removeClass("fas");

@@ -47,7 +47,7 @@ class StoryList {
     // TODO - Implement this functions!
     // this function should return the newly created story so it can be used in
     // the ui.js file where it will be appended to the DOM
-    let createdStory = await axios.post("http://hack-or-snooze-v3.herokuapp.com/stories",{"token": user.loginToken, "story": newStory});
+    let createdStory = await axios.post("http://hack-or-snooze-v3.herokuapp.com/stories", { "token": user.loginToken, "story": newStory });
     return createdStory;
   }
 }
@@ -122,9 +122,18 @@ class User {
     // attach the token to the newUser instance for convenience
     existingUser.loginToken = response.data.token;
 
-    
+
 
     return existingUser;
+  }
+
+  /**
+   * Adding favorite to user's favorites array
+   */
+
+  async addFavorite(user, storyId) {
+    let newFavorite = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { "token": user.loginToken });
+    return newFavorite;
   }
 
   /** Get user instance for the logged-in-user.
@@ -177,4 +186,13 @@ class Story {
     this.createdAt = storyObj.createdAt;
     this.updatedAt = storyObj.updatedAt;
   }
+}
+
+function loopFavorites (user, story) {
+  for(let i = 0; i < user.favorites.length; i++) {
+    if(user.favorites[i].storyId === story.storyId){
+      return "fas";
+    } 
+  }
+  return "far";
 }
