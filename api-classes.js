@@ -186,9 +186,11 @@ class User {
   }
   //delete stories
   async deleteArticle(storyId) { //
-    await axios.delete(`${BASE_URL}/stories/${storyId}`, { data: { token: currentUser.loginToken } });
-    // currentUser.ownStories;
-
+    let response = await axios.delete(`${BASE_URL}/stories/${storyId}`, { data: { token: currentUser.loginToken } });
+    debugger;
+    currentUser.ownStories = currentUser.ownStories.filter(story => {
+      story.storyId !== storyId;
+    });
   }
 
 

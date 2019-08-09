@@ -221,7 +221,24 @@ $(async function () {
 
     return storyMarkup;
   }
+  
+  function generateFavoritesHTML(story) {
+    let hostName = getHostName(story.url);
+    // render story markup
+    const storyMarkup = $(`
+      <li id="${story.storyId}">
+        <i class="fas fa-star"></i>
+        <a class="article-link" href="${story.url}" target="a_blank">
+          <strong>${story.title}</strong>
+        </a>
+        <small class="article-author">by ${story.author}</small>
+        <small class="article-hostname ${hostName}">(${hostName})</small>
+        <small class="article-username">posted by ${story.username}</small>
+      </li>
+    `);
 
+    return storyMarkup;
+  }
   // /* click listener on stars */
   // if(currentUser !== null) {
   //   $(".star").on("click", favoriteArticle);
@@ -246,13 +263,6 @@ $(async function () {
     currentUser.deleteArticle($(evt.target).parent().attr("id"));
     $(evt.target).parent().remove();
   });
-
-
-
-
-
-
-
 
 
 
