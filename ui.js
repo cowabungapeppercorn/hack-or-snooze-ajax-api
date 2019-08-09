@@ -201,27 +201,45 @@ $(async function () {
     return storyMarkup;
   }
 
-  /* click listener on stars */
-  if(currentUser !== null) {
-    $(".star").on("click", favoriteArticle);
-  };
+  function generateFavoritesHTML(story) {
+    let hostName = getHostName(story.url);
+    // render story markup
+    const storyMarkup = $(`
+      <li id="${story.storyId}">
+      <span class="star">
+      <i class="fas fa-star"></i>
+      </span>
+        <a class="article-link" href="${story.url}" target="a_blank">
+          <strong>${story.title}</strong>
+        </a>
+        <small class="article-author">by ${story.author}</small>
+        <small class="article-hostname ${hostName}">(${hostName})</small>
+        <small class="article-username">posted by ${story.username}</small>
+      </li>
+    `);
 
+    return storyMarkup;
+  }
+
+  // /* click listener on stars */
+  // if(currentUser !== null) {
+  //   $(".star").on("click", favoriteArticle);
+  // };
+
+  $allStoriesList.on("click", $(".star"), function(evt){
+    favoriteArticle(evt);
+  });
 
   /*  Creating the click function for the favorite  */
-  async function favoriteArticle() {
-    console.log("click");
-    if ($(this).children().hasClass("far")) {
-      let storyId = $(this).closest("li").attr('id');
+  async function favoriteArticle(evt) {
+    if ($(evt.target).closest("i").hasClass("far")) {
+      let storyId = $(evt.target).closest("li").attr('id');
 
-      $(this).children().addClass('fas').removeClass("far");
-      console.log(storyId);
+      $(evt.target).closest("i").addClass('fas').removeClass("far");
       await currentUser.addFavorite(currentUser, storyId);
-      // currentUser.favorites.push(story);
     } else {
-      let storyId = $(this).closest("li").attr('id');
-
-      $(this).children().addClass('far').removeClass("fas");
-      // console.log("remove please")
+      let storyId = $(evt.target).closest("li").attr('id');
+      $(evt.target).closest("i").addClass('far').removeClass("fas");
       await currentUser.removeFavorite(currentUser, storyId);
     }
   }
@@ -289,7 +307,7 @@ $("#nav-favorites").on("click", generateFavs);
   $allStoriesList.empty();
   // loop through all of our stories and generate HTML for them
   for (let story of favoriteList) {
-    const result = generateStoryHTML(story);
+    const result = generateFavoritesHTML(story);
     $allStoriesList.append(result);
   }
 }

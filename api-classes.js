@@ -209,11 +209,9 @@ class Story {
 }
 
 function loopFavorites(user, story) {
-  // debugger;
   if (user === null) {
     return "far"
   } else {
-    // debugger;
     for (let i = 0; i < user.favorites.length; i++) {
       if (user.favorites[i].storyId === story.storyId) {
         return "fas";
