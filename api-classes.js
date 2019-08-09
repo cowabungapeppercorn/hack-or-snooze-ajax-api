@@ -133,7 +133,6 @@ class User {
 
   async addFavorite(user, storyId) {
     let response = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { token: user.loginToken });
-    // debugger;
     user.favorites = response.data.user.favorites;
   }
   async removeFavorite(user, storyId) {

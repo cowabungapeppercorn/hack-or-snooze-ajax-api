@@ -233,7 +233,6 @@ $(async function () {
 
   /*  Creating the click function for the favorite  */
   async function favoriteArticle(evt) {
-    debugger;
     let storyId = $(evt.target).parent().attr('id');
     $(evt.target).toggleClass("far fas");
     if ($(evt.target).hasClass("fas")) {
