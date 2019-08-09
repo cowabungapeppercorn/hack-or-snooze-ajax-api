@@ -9,6 +9,7 @@ $(async function () {
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
   const $ownStories = $("#my-articles");
+  const $myStoriesButton = $("#nav-my-stories");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
   const $navSubmit = $("#nav-submit");
@@ -103,6 +104,7 @@ $(async function () {
     }
     await storyList.addStory(currentUser, newStoryObj);
     generateStories();
+    currentUser.ownStories.push(newStoryObj);
     $submitForm.slideToggle();
     $allStoriesList.toggle();
   });
@@ -199,12 +201,15 @@ $(async function () {
     return storyMarkup;
   }
 
-  function generateFavoritesHTML(story) {
+
+  //generate my stories
+
+  function generateMyStoriesHTML(story) {
     let hostName = getHostName(story.url);
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-        <i class="fas fa-star"></i>
+        <i class="fas fa-trash"></i>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -228,6 +233,7 @@ $(async function () {
 
   /*  Creating the click function for the favorite  */
   async function favoriteArticle(evt) {
+    debugger;
     let storyId = $(evt.target).parent().attr('id');
     $(evt.target).toggleClass("far fas");
     if ($(evt.target).hasClass("fas")) {
@@ -236,6 +242,17 @@ $(async function () {
       await currentUser.removeFavorite(currentUser, storyId);
     }
   }
+  // removing articles we created
+  $allStoriesList.on("click", ".fa-trash", function(evt){
+    currentUser.deleteArticle($(evt.target).parent().attr("id"));
+    $(evt.target).parent().remove();
+  });
+
+
+
+
+
+
 
 
 
@@ -306,6 +323,16 @@ function generateFavs() {
 }
 
 
+//adding my stories to the DOM
+$myStoriesButton.on("click", function() {
+  $allStoriesList.empty();
+  for(let myStory of currentUser.ownStories){
+    const result = generateMyStoriesHTML(myStory);
+    $allStoriesList.append(result);
+  }
+});
+
+
 });
 
 function loopFavorites(user, story) {
@@ -327,3 +354,5 @@ function starCheck(user) {
   }
   return;
 }
+
+

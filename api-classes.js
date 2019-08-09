@@ -185,6 +185,14 @@ class User {
     return stories;
 
   }
+  //delete stories
+  async deleteArticle(storyId) { //
+    await axios.delete(`${BASE_URL}/stories/${storyId}`, { data: { token: currentUser.loginToken } });
+    // currentUser.ownStories;
+
+  }
+
+
 }
 
 /**
