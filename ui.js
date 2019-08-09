@@ -1,5 +1,5 @@
- // global currentUser variable
- let currentUser = null;
+// global currentUser variable
+let currentUser = null;
 
 $(async function () {
   // cache some selectors we'll be using quite a bit
@@ -16,7 +16,7 @@ $(async function () {
   // global storyList variable
   let storyList = null;
 
- 
+
 
   await checkIfLoggedIn();
 
@@ -39,6 +39,7 @@ $(async function () {
     syncCurrentUserToLocalStorage();
     loginAndSubmitForm();
     $(".main-nav-links").toggleClass("hidden");
+    $(".star").toggleClass("hidden");
   });
 
   /**
@@ -68,6 +69,7 @@ $(async function () {
   $navLogOut.on("click", function () {
     // empty out local storage
     localStorage.clear();
+    $(".star").toggleClass("hidden");
     // refresh the page, clearing memory
     location.reload();
   });
@@ -186,7 +188,7 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-      <span class="star">
+      <span class="star ${starCheck(currentUser)}">
       <i class="${loopFavorites(currentUser, story)} fa-star"></i>
       </span>
         <a class="article-link" href="${story.url}" target="a_blank">
@@ -206,12 +208,17 @@ $(async function () {
 
   /*  Creating the click function for the favorite  */
   async function favoriteArticle() {
+    console.log("click");
     if ($(this).children().hasClass("far")) {
-      $(this).children().addClass('fas').removeClass("far");
       let storyId = $(this).closest("li").attr('id');
+      console.log(storyId);
       await currentUser.addFavorite(currentUser, storyId);
+      $(this).children().addClass('fas').removeClass("far");
       // currentUser.favorites.push(story);
     } else {
+      let storyId = $(this).closest("li").attr('id');
+      // console.log("remove please")
+      await currentUser.removeFavorite(currentUser, storyId);
       $(this).children().addClass('far').removeClass("fas");
     }
   }
@@ -237,6 +244,9 @@ $(async function () {
     $(".main-nav-links").show();
     $navLogin.hide();
     $navLogOut.show();
+    if ($(".star").hasClass("hidden")) {
+      $(".star").removeClass("hidden");
+    }
   }
 
   /* simple function to pull the hostname from a URL */
@@ -262,4 +272,24 @@ $(async function () {
       localStorage.setItem("username", currentUser.username);
     }
   }
+
+/* click and show favorites */
+$("#nav-favorites").on("click", generateFavs);
+
+/* Generate favorite stories function */
+ async function generateFavs() {
+  // get an instance of StoryList
+  const favoriteStoryListInstance = await currentUser.getFavoriteStories();
+  // update our global variable
+  favoriteList = favoriteStoryListInstance;
+  // empty out that part of the page
+  $allStoriesList.empty();
+  // loop through all of our stories and generate HTML for them
+  for (let story of favoriteList) {
+    const result = generateStoryHTML(story);
+    $allStoriesList.append(result);
+  }
+}
+
+
 });

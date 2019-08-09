@@ -135,6 +135,12 @@ class User {
     let newFavorite = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { "token": user.loginToken });
     return newFavorite;
   }
+  async removeFavorite(user, storyId) {
+    let removedFavorite = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyId}`, { "data": { "token": user.loginToken } });
+    return removedFavorite;
+  }
+
+
 
   /** Get user instance for the logged-in-user.
    *
@@ -164,6 +170,21 @@ class User {
     existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
     return existingUser;
   }
+  //get Favorite stories
+  async getFavoriteStories() {
+    // query the /stories endpoint (no auth required)
+    console.log(currentUser.loginToken);
+    const response = await axios.get(`${BASE_URL}/users/${currentUser.username}/`, {
+      params: {
+        "token": currentUser.loginToken
+      }
+    });
+    //makes favorites iterable
+    const stories = response.data.user.favorites;
+
+    return stories;
+
+  }
 }
 
 /**
@@ -188,11 +209,24 @@ class Story {
   }
 }
 
-function loopFavorites (user, story) {
-  for(let i = 0; i < user.favorites.length; i++) {
-    if(user.favorites[i].storyId === story.storyId){
-      return "fas";
-    } 
+function loopFavorites(user, story) {
+  // debugger;
+  if (user === null) {
+    return "far"
+  } else {
+    // debugger;
+    for (let i = 0; i < user.favorites.length; i++) {
+      if (user.favorites[i].storyId === story.storyId) {
+        return "fas";
+      }
+    }
   }
   return "far";
+}
+
+function starCheck(user) {
+  if (user === null) {
+    return "hidden";
+  }
+  return;
 }
